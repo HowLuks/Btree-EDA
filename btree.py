@@ -17,6 +17,7 @@ class BTreeNo:
             while aux >= 0 and self.chaves[aux] > chave:
                 aux -= 1
             aux += 1
+            
             if len(self.filhos[aux].chaves) == 2 * self.grau - 1:
                 self.split(aux)
                 if self.chaves[aux] < chave:
@@ -35,7 +36,7 @@ class BTreeNo:
 
         if not varFilhos.folha:
             noAux.filhos = varFilhos.filhos[grau:(2*grau)]
-            varFilhos = varFilhos[0:grau]
+            varFilhos = varFilhos.filhos[0:grau]
 
 
 
@@ -86,7 +87,7 @@ def escrever_arquivo(nome, btree):
             saida.write(f"Nível {nivel}: {' - '.join(nosformatados)}\n")
     
     
-dados = ler_arquivo("entrada.txt")
+dados = ler_arquivo("entrada 2.txt")
 for num in range(0, len(dados)):
             if num == 0:
                 grau = int(dados[0])
