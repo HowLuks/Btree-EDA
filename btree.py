@@ -55,34 +55,43 @@ class BTree:
         else:
             raiz.inserir(chave)
 
-    def printar(self):
-        if not self.raiz:
+
+def ler_arquivo(nome):
+    with open(nome, "r") as entrada:
+        dados = [int(line.strip()) for line in entrada]
+
+        return dados
+        
+def escrever_arquivo(nome, btree):
+    with open(nome, "w") as saida:
+        if not btree.raiz:
             return
 
-        queue = [(self.raiz, 0)]
-        current_level = 0
-        levels = {}
+        queue = [(btree.raiz, 0)]
+        niveis = {}
 
         while queue:
-            node, level = queue.pop(0)
-            if level not in levels:
-                levels[level] = []
-            levels[level].append(node.chaves)
+            no, nivel = queue.pop(0)
+            if nivel not in niveis:
+                niveis[nivel] = []
+            niveis[nivel].append(no.chaves)
 
-            for filho in node.filhos:
-                queue.append((filho, level + 1))
+            for filho in no.filhos:
+                queue.append((filho, nivel + 1))
 
-        print(f"Ordem da árvore: {self.grau}")
-        print(f"Níveis: {len(levels)}")
+        saida.write(f"grau da arvore b:{btree.grau} |  Níveis: {len(niveis)}\n")
+        for nivel in sorted(niveis.keys()):
+            nospornivel = niveis[nivel]
+            nosformatados = [", ".join(map(str, no)) for no in nospornivel]
+            saida.write(f"Nível {nivel}: {' - '.join(nosformatados)}\n")
+    
+    
+dados = ler_arquivo("entrada.txt")
+for num in range(0, len(dados)):
+            if num == 0:
+                grau = int(dados[0])
+                BTree = BTree(grau)
+            else:
+                BTree.insert(int(dados[num]))
 
-        for level in sorted(levels.keys()):
-            nodes_at_level = levels[level]
-            formatted_nodes = ["-".join(map(str, node)) for node in nodes_at_level]
-            print(f"Nível {level}: {', '.join(formatted_nodes)}")
-
-BTree = BTree(3)
-chaves = [10, 20, 5, 6, 12, 30, 7, 17]
-for chave in chaves:
-    BTree.insert(chave)
-
-BTree.printar()
+escrever_arquivo("saida.txt", BTree)
