@@ -18,7 +18,7 @@ class BTreeNo:
                 aux -= 1
             aux += 1
             
-            if len(self.filhos[aux].chaves) == 2 * self.grau - 1:
+            if len(self.filhos[aux].chaves) >= self.grau - 1:
                 self.split(aux)
                 if self.chaves[aux] < chave:
                     aux += 1
