@@ -9,7 +9,7 @@ class NoDaArvore {
     bool folha; // Verdadeiro se o nó for folha
 
 public:
-    NoDaArvore(int grau, bool folha);
+    NoDaArvore(int grau1, bool folha1);
 
     // Função para percorrer todos os nós em uma subárvore enraizada neste nó
     void traverse();
@@ -21,7 +21,7 @@ public:
     void inserir(int k);
 
     // Função que divide o filho y deste nó. i é o índice de y em C[]
-    void splitChild(int i, NoDaArvore *y);
+    void separar(int i, NoDaArvore *y);
 
     friend class BTree;
 };
@@ -47,9 +47,9 @@ public:
     void insert(int k);
 };
 
-NoDaArvore::NoDaArvore(int grau, bool folha) {
-    grau = grau;
-    folha = folha;
+NoDaArvore::NoDaArvore(int grau1, bool folha1) {
+    grau = grau1;
+    folha = folha1;
     chaves = new int[2*grau-1];
     C = new NoDaArvore *[2*grau];
     numChaves = 0;
@@ -91,7 +91,7 @@ void BTree::insert(int k) {
         if (raiz->numChaves == 2*grau-1) {
             NoDaArvore *s = new NoDaArvore(grau, false);
             s->C[0] = raiz;
-            s->splitChild(0, raiz);
+            s->separar(0, raiz);
             int i = 0;
             if (s->chaves[0] < k) {
                 i++;
@@ -118,7 +118,7 @@ void NoDaArvore::inserir(int k) {
             i--;
         }
         if (C[i+1]->numChaves == 2*grau-1) {
-            splitChild(i+1, C[i+1]);
+            separar(i+1, C[i+1]);
             if (chaves[i+1] < k) {
                 i++;
             }
@@ -127,7 +127,7 @@ void NoDaArvore::inserir(int k) {
     }
 }
 
-void NoDaArvore::splitChild(int i, NoDaArvore *y) {
+void NoDaArvore::separar(int i, NoDaArvore *y) {
     NoDaArvore *z = new NoDaArvore(y->grau, y->folha);
     z->numChaves = grau - 1;
     for (int j = 0; j < grau-1; j++) {
@@ -160,10 +160,11 @@ int main() {
     t.insert(30);
     t.insert(7);
     t.insert(17);
+    printf("inseriu");
 
     cout << "Percorrendo a arvore construida\n";
     t.traverse();
-
+    printf("printou");
     int k = 6;
     (t.busca(k) != NULL) ? cout << "\nPresente" : cout << "\nNao Presente\n";
 
