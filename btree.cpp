@@ -199,10 +199,6 @@ int main() {
 
     fclose(arquivo);
 
-    
-    for (int j = 0; j < aux; j++) {
-        printf("Número %d: %d\n", j+1, entrada[j]);
-    }
 
     BTree t(entrada[0]);
     for (int j = 1; j < aux; j++) {
