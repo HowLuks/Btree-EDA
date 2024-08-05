@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 using namespace std;
 
 class NoDaArvore {
@@ -149,6 +152,8 @@ void NoDaArvore::separar(int i, NoDaArvore *y) {
     chaves[i] = y->chaves[grau-1];
     numChaves = numChaves + 1;
 }
+
+
 
 int main() {
     BTree t(3); // Criando uma Árvore B com grau 3
