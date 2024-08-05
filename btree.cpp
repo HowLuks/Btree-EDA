@@ -14,12 +14,6 @@ class NoDaArvore {
 public:
     NoDaArvore(int grau1, bool folha1);
 
-    // Função para percorrer todos os nós em uma subárvore enraizada neste nó
-    void traverse();
-
-    // Função para buscar uma chave na subárvore enraizada neste nó
-    NoDaArvore *busca(int k);
-
     // Função que insere uma nova chave na subárvore enraizada neste nó
     void inserir(int k);
 
@@ -39,14 +33,6 @@ public:
         grau = _grau;
     }
 
-    void traverse() {
-        if (raiz != NULL) raiz->traverse();
-    }
-
-    NoDaArvore* busca(int k) {
-        return (raiz == NULL) ? NULL : raiz->busca(k);
-    }
-
     void insert(int k);
 };
 
@@ -56,33 +42,6 @@ NoDaArvore::NoDaArvore(int grau1, bool folha1) {
     chaves = new int[2*grau-1];
     C = new NoDaArvore *[2*grau];
     numChaves = 0;
-}
-
-void NoDaArvore::traverse() {
-    int i;
-    for (i = 0; i < numChaves; i++) {
-        if (!folha) {
-            C[i]->traverse();
-        }
-        cout << " " << chaves[i];
-    }
-    if (!folha) {
-        C[i]->traverse();
-    }
-}
-
-NoDaArvore* NoDaArvore::busca(int k) {
-    int i = 0;
-    while (i < numChaves && k > chaves[i]) {
-        i++;
-    }
-    if (chaves[i] == k) {
-        return this;
-    }
-    if (folha) {
-        return NULL;
-    }
-    return C[i]->busca(k);
 }
 
 void BTree::insert(int k) {
@@ -166,15 +125,6 @@ int main() {
     t.insert(7);
     t.insert(17);
     printf("inseriu");
-
-    cout << "Percorrendo a arvore construida\n";
-    t.traverse();
-    printf("printou");
-    int k = 6;
-    (t.busca(k) != NULL) ? cout << "\nPresente" : cout << "\nNao Presente\n";
-
-    k = 15;
-    (t.busca(k) != NULL) ? cout << "\nPresente" : cout << "\nNao Presente\n";
 
     return 0;
 }
