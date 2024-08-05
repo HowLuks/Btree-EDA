@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <queue>
 using namespace std;
 
 class NoDaArvore {
@@ -14,11 +15,11 @@ class NoDaArvore {
 public:
     NoDaArvore(int grau1, bool folha1);
 
-    // Função que insere uma nova chave na subárvore enraizada neste nó
     void inserir(int k);
 
-    // Função que divide o filho y deste nó. i é o índice de y em C[]
     void separar(int i, NoDaArvore *y);
+
+    void printarq(FILE *saida, int level);
 
     friend class BTree;
 };
@@ -34,6 +35,10 @@ public:
     }
 
     void insert(int k);
+
+    int altura();
+
+    void printarq();
 };
 
 NoDaArvore::NoDaArvore(int grau1, bool folha1) {
@@ -65,6 +70,62 @@ void BTree::insert(int k) {
         }
     }
 }
+
+int BTree::altura() {
+    int alt = 0;
+    NoDaArvore *atual = raiz;
+    while (atual != NULL) {
+        alt++;
+        atual = (atual->folha) ? NULL : atual->C[0];
+    }
+    return alt;
+}
+
+void BTree::printarq() {
+    FILE *saida = fopen("saida.txt", "w");
+    if (saida != NULL) {
+        int alt = altura();
+        fprintf(saida, "Ordem: %d, Níveis: %d\n", grau, alt);
+        if (raiz != NULL) raiz->printarq(saida, 1);
+        fclose(saida);
+    } else {
+        cout << "Não foi possível abrir o arquivo de saída.\n";
+    }
+}
+
+void NoDaArvore::printarq(FILE *saida, int level) {
+    queue<pair<NoDaArvore*, int>> nos;
+    nos.push({this, level});
+
+    while (!nos.empty()) {
+        int numNo = nos.size();
+        int nivelAtual = nos.front().second;
+        fprintf(saida, "%d - ", nivelAtual);
+        while (numNo > 0) {
+            NoDaArvore *atualNo = nos.front().first;
+            nos.pop();
+
+            for (int i = 0; i < atualNo->numChaves; i++) {
+                fprintf(saida, "%d", atualNo->chaves[i]);
+                if (i < atualNo->numChaves - 1) {
+                    fprintf(saida, ", ");
+                }
+            }
+            if (numNo > 1) {
+                fprintf(saida, " - ");
+            }
+
+            if (!atualNo->folha) {
+                for (int i = 0; i <= atualNo->numChaves; i++) {
+                    nos.push({atualNo->C[i], nivelAtual + 1});
+                }
+            }
+            numNo--;
+        }
+        fprintf(saida, "\n");
+    }
+}
+
 
 void NoDaArvore::inserir(int k) {
     int i = numChaves-1;
@@ -115,16 +176,42 @@ void NoDaArvore::separar(int i, NoDaArvore *y) {
 
 
 int main() {
-    BTree t(3); // Criando uma Árvore B com grau 3
-    t.insert(10);
-    t.insert(20);
-    t.insert(5);
-    t.insert(6);
-    t.insert(12);
-    t.insert(30);
-    t.insert(7);
-    t.insert(17);
+
+    FILE *arquivo;
+    int entrada[201];
+    int aux = 0;
+
+    
+    arquivo = fopen("entrada.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return 1;
+    }
+
+    
+    while (fscanf(arquivo, "%d", &entrada[aux]) != EOF) {
+        aux++;
+        if (aux >= 201) {
+            printf("Vetor cheio. Certifique-se de que o número de linhas no arquivo não exceda %d.\n", 201);
+            break;
+        }
+    }
+
+    fclose(arquivo);
+
+    
+    for (int j = 0; j < aux; j++) {
+        printf("Número %d: %d\n", j+1, entrada[j]);
+    }
+
+    BTree t(entrada[0]);
+    for (int j = 1; j < aux; j++) {
+        t.insert(entrada[j]);
+    }
+    
     printf("inseriu");
+
+    t.printarq();
 
     return 0;
 }
